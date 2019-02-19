@@ -22,7 +22,11 @@ var Matrix4 = function(opt_src) {
     }
     this.elements = d;
   } else {
-    this.elements = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+    this.elements = new Float32Array([
+      1,0,0,0,
+      0,1,0,0,
+      0,0,1,0,
+      0,0,0,1]);
   }
 };
 

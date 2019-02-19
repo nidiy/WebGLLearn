@@ -4,16 +4,17 @@ import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {HelloPoint2Component} from "./HelloPoint2/HelloPoint2.component";
 import {MultiPointComponent} from "./MultiPoint/MultiPoint.component";
+import {MatrixComponent} from "./RotatedTriangleMatrix/Matrix.component";
 
 @NgModule({
   declarations: [
-    MultiPointComponent
+    MatrixComponent
   ],
   imports: [
     BrowserModule
   ],
   providers: [],
-  bootstrap: [MultiPointComponent]
+  bootstrap: [MatrixComponent]
 })
 export class AppModule {
 }

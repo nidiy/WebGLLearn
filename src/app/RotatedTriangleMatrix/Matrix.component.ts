@@ -2,25 +2,19 @@ import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './MultiPoint.component.html',
-  styleUrls: ['./MultiPoint.component.css']
+  templateUrl: './Matrix.component.html',
+  styleUrls: ['./Matrix.component.css']
 })
-export class MultiPointComponent implements OnInit {
+export class MatrixComponent implements OnInit {
   title = 'app';
   canvas: HTMLCanvasElement;
   gl: WebGLRenderingContext;
   count: number = 0;
   VSHADER_SOURCE: string =
     'attribute vec4 a_Position;\n' +
-    'attribute float a_PointSize;\n' +
-    'uniform vec4 u_Translation;\n' +
-    'uniform float u_CosB,u_SinB;\n' +
+    'uniform mat4 u_xformMatrix;\n' +
     'void main(){\n' +
-    '  gl_Position.x=a_Position.x*u_CosB-a_Position.y*u_SinB;\n' +
-    '  gl_Position.y=a_Position.x*u_SinB+a_Position.y*u_CosB;\n' +
-    '  gl_Position.z=a_Position.z;\n' +
-    '  gl_Position.w=1.0;\n' +
-    '  gl_PointSize=a_PointSize;\n' +
+    '  gl_Position=u_xformMatrix*a_Position;\n' +
     '}\n';
 
   FSHADER_SOURCE: string =
@@ -29,7 +23,8 @@ export class MultiPointComponent implements OnInit {
     'void main(){\n' +
     'gl_FragColor=u_FragColor;\n' +
     '}\n';
-  public ANGLE = -50.0;
+  public ANGLE = 30.0;
+  public startNow: number = 0;
 
   initVertexBuffers(gl: WebGLRenderingContext): number {
     const vertices = new Float32Array([
@@ -54,31 +49,51 @@ export class MultiPointComponent implements OnInit {
     this.canvas = document.getElementById('webgl') as HTMLCanvasElement;
     this.gl = getWebGLContext(this.canvas);
     initShaders(this.gl, this.VSHADER_SOURCE, this.FSHADER_SOURCE);
-
     this.count = this.initVertexBuffers(this.gl);
-    const a_PointSize = this.gl.getAttribLocation(this.gl['program'], 'a_PointSize');
     const u_FragColor = this.gl.getUniformLocation(this.gl['program'], 'u_FragColor');
-    const u_Translation = this.gl.getUniformLocation(this.gl['program'], 'u_Translation');
     this.setAngle(this.ANGLE);
-    this.gl.vertexAttrib1f(a_PointSize, 10.0);
     this.gl.uniform4f(u_FragColor, 1.0, 0.0, 0.0, 1.0);
-    this.gl.uniform4f(u_Translation, 0.5, -0.5, 0.0, 0.0);
     this.render();
     this.canvas.addEventListener('click', (event) => {
       this.ANGLE += 5;
-      this.setAngle(this.ANGLE);
+      this.setAngle(this.ANGLE, [0.0, 0.0, 0.0], [0.5, 0.5, 1.0]);
       this.render();
     })
+    this.startNow = Date.now();
+    this.tick();
+    //console.log("Now:", Date.now());
+
   }
 
-  public setAngle(value: number = 10): void {
+  public tick(): void {
+    this.ANGLE += 5;
+    this.setAngle(this.ANGLE, [0.0, 0.0, 0.0], [0.5, 0.5, 1.0]);
+    this.render();
+    //console.log(`当前运行了${(Date.now()-this.startNow) / 1000.0}秒`);
+    requestAnimFrame(this.tick.bind(this))
+  }
+
+  public setAngle(value: number = 10, translates: Array<number> = [0.0, 0.0, 0.0], scales: Array<number> = [0.5, 0.5, 0.5]): void {
     const radian = Math.PI * value / 180.0;
     const cosB = Math.cos(radian);
     const sinB = Math.sin(radian);
-    const u_CosB = this.gl.getUniformLocation(this.gl['program'], 'u_CosB');
-    this.gl.uniform1f(u_CosB, cosB);
-    const u_SinB = this.gl.getUniformLocation(this.gl['program'], 'u_SinB');
-    this.gl.uniform1f(u_SinB, sinB);
+    let Tx: number = translates[0], Ty: number = translates[1], Tz: number = translates[2];
+    let scaleX: number = scales[0], scaleY: number = scales[1], scaleZ: number = scales[2];
+    const xformMatrix = new Float32Array([
+      cosB * scaleX, sinB, 0.0, 0.0,
+      -sinB, cosB * scaleY, 0.0, 0.0,
+      0.0, 0.0, 1.0 * scaleZ, 0.0,
+      Tx, Ty, Tz, 1.0
+    ])
+
+    const matrix4: Matrix4 = new Matrix4();
+    matrix4.setRotate(value % 360, 0, 0, 1);
+    matrix4.translate(0.5, 0.0, 0);
+    matrix4.scale(0.5, 0.5, 0.5);
+    //matrix4.setTranslate(0.5,0.0,0);
+    //matrix4.rotate(value % 360, 0, 0, 1);
+    const u_xformMatrix = this.gl.getUniformLocation(this.gl['program'], 'u_xformMatrix');
+    this.gl.uniformMatrix4fv(u_xformMatrix, false, matrix4.elements);
   }
 
   public render(): void {
