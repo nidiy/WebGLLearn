@@ -5,17 +5,19 @@ import {AppComponent} from './app.component';
 import {HelloPoint2Component} from "./HelloPoint2/HelloPoint2.component";
 import {MultiPointComponent} from "./MultiPoint/MultiPoint.component";
 import {MatrixComponent} from "./RotatedTriangleMatrix/Matrix.component";
-import {MultiAttributeSizeComponent} from "./multiAttributeSize/MultiAttributeSize.component";
+import {MultiPointSizeComponent} from "./multiPointSize/MultiPointSize.component";
+import {HelloTriangleComponent} from "./helloTriangle/HelloTriangle.component";
+import {TextureQuadComponent} from "./textureQuad/TextureQuad.component";
 
 @NgModule({
   declarations: [
-    MultiAttributeSizeComponent
+    TextureQuadComponent
   ],
   imports: [
     BrowserModule
   ],
   providers: [],
-  bootstrap: [MultiAttributeSizeComponent]
+  bootstrap: [TextureQuadComponent]
 })
 export class AppModule {
 }
