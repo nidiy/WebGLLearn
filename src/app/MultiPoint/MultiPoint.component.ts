@@ -59,6 +59,7 @@ export class MultiPointComponent implements OnInit {
     const a_PointSize = this.gl.getAttribLocation(this.gl['program'], 'a_PointSize');
     const u_FragColor = this.gl.getUniformLocation(this.gl['program'], 'u_FragColor');
     const u_Translation = this.gl.getUniformLocation(this.gl['program'], 'u_Translation');
+    console.log("a_PointSize",a_PointSize)
     this.setAngle(this.ANGLE);
     this.gl.vertexAttrib1f(a_PointSize, 10.0);
     this.gl.uniform4f(u_FragColor, 1.0, 0.0, 0.0, 1.0);

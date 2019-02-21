@@ -21,7 +21,6 @@ export class HelloPoint2Component implements OnInit {
     'void main(){\n' +
     'gl_FragColor=u_FragColor;\n' +
     '}\n';
-
   ngOnInit() {
     this.canvas = document.getElementById('webgl') as HTMLCanvasElement;
     const gl = getWebGLContext(this.canvas);
