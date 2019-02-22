@@ -8,16 +8,18 @@ import {MatrixComponent} from "./RotatedTriangleMatrix/Matrix.component";
 import {MultiPointSizeComponent} from "./multiPointSize/MultiPointSize.component";
 import {HelloTriangleComponent} from "./helloTriangle/HelloTriangle.component";
 import {TextureQuadComponent} from "./textureQuad/TextureQuad.component";
+import {MultiTextureComponent} from "./multiTexture/MultiTexture.component";
+import {LookAtTrianglesComponent} from "./lookAtTriangles/LookAtTriangles.component";
 
 @NgModule({
   declarations: [
-    TextureQuadComponent
+    LookAtTrianglesComponent
   ],
   imports: [
     BrowserModule
   ],
   providers: [],
-  bootstrap: [TextureQuadComponent]
+  bootstrap: [LookAtTrianglesComponent]
 })
 export class AppModule {
 }

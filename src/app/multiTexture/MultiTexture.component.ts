@@ -2,14 +2,14 @@ import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './TextureQuad.component.html',
-  styleUrls: ['./TextureQuad.component.css']
+  templateUrl: './MultiTexture.component.html',
+  styleUrls: ['./MultiTexture.component.css']
 })
-export class TextureQuadComponent implements OnInit {
+export class MultiTextureComponent implements OnInit {
   title = 'app';
   canvas: HTMLCanvasElement;
   gl: WebGLRenderingContext;
-  count: number = 0;
+  count = 0;
   VSHADER_SOURCE: string =
     'attribute vec4 a_Position;\n' +
     'attribute vec2 a_TexCoord;\n' +
@@ -21,26 +21,29 @@ export class TextureQuadComponent implements OnInit {
 
   FSHADER_SOURCE: string =
     'precision mediump float;\n' +
-    'uniform sampler2D u_Sampler;\n' +
+    'uniform sampler2D u_Sampler0;\n' +
+    'uniform sampler2D u_Sampler1;\n' +
     'varying vec2 v_TexCoord;\n' +
     'void main(){\n' +
-    '  gl_FragColor=texture2D(u_Sampler,v_TexCoord);\n' +
+    '  vec4 color0=texture2D(u_Sampler0,v_TexCoord);\n' +
+    '  vec4 color1=texture2D(u_Sampler1,v_TexCoord);\n' +
+    '  gl_FragColor=color0+color1;\n' +
     '}\n';
   public ANGLE = -50.0;
+  public g_texUnit0: boolean = false;
+  public g_texUnit1: boolean = false;
 
   initVertexBuffers(gl: WebGLRenderingContext): number {
     const vertices = new Float32Array([
       // x   y     u    v
-      -0.5, 0.5, -0.3, 1.7,
-      -0.5, -0.5, -0.3, -0.2,
-       0.5, 0.5, 1.7, 1.7,
-       0.5, -0.5, 1.7, -0.2
+      -0.5, 0.5, 0.0, 1.0,
+      -0.5, -0.5, 0.0, 0.0,
+      0.5, 0.5, 1.0, 1.0,
+      0.5, -0.5, 1.0, 0.0
     ]);
-    console.log("vertices",vertices)
     const n = vertices.length / 4;
     const FSIZE: number = vertices.BYTES_PER_ELEMENT;
     const vertexBuffer = gl.createBuffer();
-    //const sizesBuffer = gl.createBuffer();
     if (!vertexBuffer) {
       console.log('Failed to create the buffer object');
       return -1;
@@ -58,31 +61,41 @@ export class TextureQuadComponent implements OnInit {
   }
 
   initTextures(gl: WebGLRenderingContext, n: number): boolean {
-    let texture = gl.createTexture();
-    let u_Sampler = gl.getUniformLocation(gl['program'], 'u_Sampler');
-    let image = new Image();
-    image.onload = () => {
-      this.loadTexture(gl, n, texture, u_Sampler, image)
+    const texture0 = gl.createTexture();
+    const u_Sampler0 = gl.getUniformLocation(gl['program'], 'u_Sampler0');
+    const image0 = new Image();
+    image0.onload = () => {
+      this.g_texUnit0 = true;
+      this.loadTexture(gl, n, texture0, u_Sampler0, image0, 0)
     };
-    image.src = 'assets/timg_512.jpg';
+    image0.src = 'assets/timg_512.jpg';
+    const texture1 = gl.createTexture();
+    const u_Sampler1 = gl.getUniformLocation(gl['program'], 'u_Sampler1');
+    const image1 = new Image();
+    image1.onload = () => {
+      this.g_texUnit1 = true;
+      this.loadTexture(gl, n, texture1, u_Sampler1, image1, 1)
+    };
+    image1.src = 'assets/circle512.jpg';
     return true;
   }
-  public loadTexture(gl: WebGLRenderingContext, n: number, texture: WebGLTexture, u_Sampler: WebGLUniformLocation, image: HTMLImageElement): void {
+
+  public loadTexture(gl: WebGLRenderingContext, n: number, texture: WebGLTexture, u_Sampler: WebGLUniformLocation, image: HTMLImageElement, texUnit: number = 0): void {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);//对纹理图像进行Y轴反转
     //开启0号纹理单元
-    gl.activeTexture(gl.TEXTURE0);
+    gl.activeTexture(gl["TEXTURE" + texUnit]);
     //向target绑定纹理对像
     gl.bindTexture(gl.TEXTURE_2D, texture);
     //配置纹理参数
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT);
     //配置纹理图像
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
     //将0号纹理传递给着色器
-    gl.uniform1i(u_Sampler, 0);
-    this.render();
-    console.log("材质加载完成=>",image);
+    gl.uniform1i(u_Sampler, texUnit);
+    if (this.g_texUnit1 && this.g_texUnit0) {
+      console.log("材质加载全部完成=>");
+      this.render();
+    }
     document.body.appendChild(image)
   }
 
@@ -91,7 +104,7 @@ export class TextureQuadComponent implements OnInit {
     this.gl = getWebGLContext(this.canvas);
     initShaders(this.gl, this.VSHADER_SOURCE, this.FSHADER_SOURCE);
     this.count = this.initVertexBuffers(this.gl);
-    this.initTextures(this.gl,0);
+    this.initTextures(this.gl, 0);
     this.canvas.addEventListener('click', (event) => {
       this.render();
     })
