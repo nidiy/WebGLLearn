@@ -5,6 +5,9 @@ import {Component, OnInit} from '@angular/core';
   templateUrl: './LookAtTriangles.component.html',
   styleUrls: ['./LookAtTriangles.component.css']
 })
+/**
+ * 正交视角实例
+ */
 export class LookAtTrianglesComponent implements OnInit {
   title = 'LookAtTrianglesComponent';
   canvas: HTMLCanvasElement;
@@ -116,7 +119,7 @@ export class LookAtTrianglesComponent implements OnInit {
   }
 
   public render(): void {
-    this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    this.gl.clearColor(0.0, 0.0, 0.0, 0.2);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     this.gl.drawArrays(this.gl.TRIANGLES, 0, this.count);
   }
