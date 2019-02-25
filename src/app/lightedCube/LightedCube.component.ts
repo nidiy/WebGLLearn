@@ -1,14 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-
 @Component({
   selector: 'app-root',
-  templateUrl: './LookAtTriangles.component.html',
-  styleUrls: ['./LookAtTriangles.component.css']
+  templateUrl: './LightedCube.component.html',
+  styleUrls: ['./LightedCube.component.css']
 })
 /**
- * 正交视角实例
+ * 灯光实例
  */
-export class LookAtTrianglesComponent implements OnInit {
+export class LightedCubeComponent implements OnInit {
   title = 'LookAtTrianglesComponent';
   canvas: HTMLCanvasElement;
   gl: WebGLRenderingContext;
@@ -16,7 +15,10 @@ export class LookAtTrianglesComponent implements OnInit {
   VSHADER_SOURCE: string =
     'attribute vec4 a_Position;\n' +
     'attribute vec4 a_Color;\n' +
+    'attribute vec4 a_Normal;\n' +
     'uniform mat4 u_mvpMatrix;\n' +
+    'uniform vec3 u_LightColor;\n' +
+    'uniform vec3 u_LightDirection;\n' +
     'varying vec4 v_Color;\n' +
     'void main(){\n' +
     '  gl_Position=u_mvpMatrix*a_Position;\n' +

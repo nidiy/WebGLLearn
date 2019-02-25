@@ -13,13 +13,13 @@ import {LookAtTrianglesComponent} from "./lookAtTriangles/LookAtTriangles.compon
 
 @NgModule({
   declarations: [
-    LookAtTrianglesComponent
+    AppComponent
   ],
   imports: [
     BrowserModule
   ],
   providers: [],
-  bootstrap: [LookAtTrianglesComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }
