@@ -1,0 +1,23 @@
+{
+  "main_no": "asdasdkh1kj23n123123",
+  "layers": [
+    {
+      "label": "第一层",
+      "height": 300,
+      "no":"asdasdkh1kj23n123123",
+      "index":0
+    },
+    {
+      "label": "第一层",
+      "height": 280,
+      "no":"asdasdkh1kj23n123123111",
+      "index":1
+    },
+    {
+      "label": "第一层",
+      "height": 280,
+      "no":"asdasdkh1kj23n123123222",
+      "index":2
+    }
+  ]
+}

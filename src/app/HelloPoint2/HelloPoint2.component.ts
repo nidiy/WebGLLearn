@@ -28,7 +28,6 @@ export class HelloPoint2Component implements OnInit {
     const a_Position = gl.getAttribLocation(gl.program, 'a_Position');
     const a_PointSize = gl.getAttribLocation(gl.program, 'a_PointSize');
     const u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor');
-    console.log("&a_Position=>", a_Position)
     const g_points = [];
     const g_colors = [];
     gl.clearColor(0.0, 0.0, 0.0, 1);
@@ -52,7 +51,7 @@ export class HelloPoint2Component implements OnInit {
       gl.clearColor(0.0, 0.0, 0.0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
       const len: number = g_points.length;
-      let index: number = 0;
+      let index = 0;
       for (let i = 0; i < len; i += 3) {
         const rgba = g_colors[index];
         gl.vertexAttrib1f(a_PointSize, g_points[i + 2]);

@@ -10,16 +10,17 @@ import {HelloTriangleComponent} from "./helloTriangle/HelloTriangle.component";
 import {TextureQuadComponent} from "./textureQuad/TextureQuad.component";
 import {MultiTextureComponent} from "./multiTexture/MultiTexture.component";
 import {LookAtTrianglesComponent} from "./lookAtTriangles/LookAtTriangles.component";
+import {LightedCubeComponent} from './lightedCube/LightedCube.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    LightedCubeComponent
   ],
   imports: [
     BrowserModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [LightedCubeComponent]
 })
 export class AppModule {
 }

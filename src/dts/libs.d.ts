@@ -1,7 +1,9 @@
 declare function getWebGLContext(canvas: HTMLCanvasElement, opt_debug?: any): any | null;
 
 declare function initShaders(gl: WebGLRenderingContext, vshader: string, fshader: string): boolean;
-declare function requestAnimFrame(callFun:Function):void
+
+declare function requestAnimFrame(callBack: Function): void;
+
 /**
  * 4x4的矩阵
  */
